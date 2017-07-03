@@ -1,11 +1,11 @@
-package com.toptal;
+package com.toptal.jogging;
 
-import com.toptal.dao.UsersDAO;
-import com.toptal.dropwizard.JoggingAuthenticator;
-import com.toptal.dropwizard.JoggingConfiguration;
-import com.toptal.dropwizard.JoggingUserAuthorizer;
-import com.toptal.model.User;
-import com.toptal.resources.UsersResource;
+import com.toptal.jogging.dao.UsersDAO;
+import com.toptal.jogging.dropwizard.JoggingAuthenticator;
+import com.toptal.jogging.dropwizard.JoggingConfiguration;
+import com.toptal.jogging.dropwizard.JoggingUserAuthorizer;
+import com.toptal.jogging.model.User;
+import com.toptal.jogging.resources.UsersResource;
 import io.dropwizard.Application;
 import io.dropwizard.auth.AuthDynamicFeature;
 import io.dropwizard.auth.AuthFilter;

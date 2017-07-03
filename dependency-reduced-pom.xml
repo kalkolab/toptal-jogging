@@ -29,7 +29,7 @@
               <transformers>
                 <transformer />
                 <transformer>
-                  <mainClass>com.toptal.JoggingApp</mainClass>
+                  <mainClass>com.toptal.jogging.JoggingApp</mainClass>
                 </transformer>
               </transformers>
             </configuration>

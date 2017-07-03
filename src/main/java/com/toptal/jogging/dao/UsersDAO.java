@@ -1,7 +1,7 @@
-package com.toptal.dao;
+package com.toptal.jogging.dao;
 
 import com.google.common.collect.Maps;
-import com.toptal.model.User;
+import com.toptal.jogging.model.User;
 
 import java.util.Map;
 

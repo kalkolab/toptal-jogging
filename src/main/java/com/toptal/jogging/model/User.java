@@ -1,7 +1,6 @@
-package com.toptal.model;
+package com.toptal.jogging.model;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
-import com.fasterxml.jackson.annotation.JsonValue;
 
 import javax.security.auth.Subject;
 import java.security.Principal;

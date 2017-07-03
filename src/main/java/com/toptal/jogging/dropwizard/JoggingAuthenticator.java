@@ -1,7 +1,6 @@
-package com.toptal.dropwizard;
+package com.toptal.jogging.dropwizard;
 
-import com.google.common.collect.ImmutableSet;
-import com.toptal.model.User;
+import com.toptal.jogging.model.User;
 import io.dropwizard.auth.AuthenticationException;
 import io.dropwizard.auth.Authenticator;
 import io.dropwizard.auth.basic.BasicCredentials;

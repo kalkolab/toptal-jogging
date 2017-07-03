@@ -1,11 +1,10 @@
-package com.toptal.resources;
+package com.toptal.jogging.resources;
 
-import com.toptal.dao.UsersDAO;
-import com.toptal.model.Representation;
-import com.toptal.model.User;
+import com.toptal.jogging.dao.UsersDAO;
+import com.toptal.jogging.model.Representation;
+import com.toptal.jogging.model.User;
 import io.dropwizard.auth.Auth;
 
-import javax.annotation.security.RolesAllowed;
 import javax.servlet.http.HttpServletResponse;
 import javax.validation.constraints.NotNull;
 import javax.ws.rs.GET;
@@ -13,7 +12,6 @@ import javax.ws.rs.POST;
 import javax.ws.rs.Path;
 import javax.ws.rs.Produces;
 import javax.ws.rs.core.MediaType;
-import javax.ws.rs.core.Response;
 
 /**
  * Created by Artem on 26.06.2017.
