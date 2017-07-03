@@ -1,4 +1,4 @@
-package com.toptal.jogging.dropwizard;
+package com.toptal.jogging;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
 import io.dropwizard.Configuration;

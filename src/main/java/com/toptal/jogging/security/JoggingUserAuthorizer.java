@@ -1,6 +1,6 @@
-package com.toptal.jogging.dropwizard;
+package com.toptal.jogging.security;
 
-import com.toptal.jogging.model.User;
+import com.toptal.jogging.domain.User;
 import io.dropwizard.auth.Authorizer;
 
 /**
@@ -9,6 +9,6 @@ import io.dropwizard.auth.Authorizer;
 public class JoggingUserAuthorizer implements Authorizer<User> {
     @Override
     public boolean authorize(User principal, String role) {
-        return role != null && principal.getRole() != null && role.equals(principal.getRole());
+        return role != null && principal.getRole() != null && role.equals(principal.getRole().name());
     }
 }

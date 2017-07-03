@@ -1,5 +1,5 @@
 database:
-  driverClass: com.mysql.cj.jdbc.Driver
+  driverClass: com.mysql.jdbc.Driver
   url: jdbc:mysql://localhost/jogging
   user: joguser
   password: jogpass

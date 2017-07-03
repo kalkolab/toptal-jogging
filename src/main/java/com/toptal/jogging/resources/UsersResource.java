@@ -1,43 +1,124 @@
 package com.toptal.jogging.resources;
 
-import com.toptal.jogging.dao.UsersDAO;
+import com.toptal.jogging.domain.User;
+import com.toptal.jogging.domain.service.UsersService;
 import com.toptal.jogging.model.Representation;
-import com.toptal.jogging.model.User;
 import io.dropwizard.auth.Auth;
 
-import javax.servlet.http.HttpServletResponse;
+import javax.annotation.security.RolesAllowed;
 import javax.validation.constraints.NotNull;
-import javax.ws.rs.GET;
-import javax.ws.rs.POST;
-import javax.ws.rs.Path;
-import javax.ws.rs.Produces;
+import javax.ws.rs.*;
 import javax.ws.rs.core.MediaType;
+import javax.ws.rs.core.Response;
+import java.util.List;
 
 /**
+ * REST API for users control
+ *
  * Created by Artem on 26.06.2017.
  */
 @Path("/users")
 @Produces(MediaType.APPLICATION_JSON)
 public class UsersResource {
-    private final UsersDAO usersDAO;
+    private final UsersService usersService;
 
-    public UsersResource(UsersDAO usersDAO) {
-        this.usersDAO = usersDAO;
+    public UsersResource(UsersService usersDAO) {
+        this.usersService = usersDAO;
     }
 
-    @GET
-    public User getUser(@Auth User user) {
-        return user;
-    }
-
+    /**
+     * <i>POST /users/new</i>
+     * <br>
+     * Create new user
+     *
+     * @return created user with id, name, role
+     */
     @POST
     @Path("/new")
     public Representation<User> createUser(@NotNull final User user) {
-        User created = usersDAO.createUser(user);
+        User created = usersService.createUser(user);
         if (created != null) {
-            return new Representation<>(HttpServletResponse.SC_CREATED, user);
+            return new Representation<>(Response.Status.OK, user);
         } else {
-            return new Representation<>(HttpServletResponse.SC_INTERNAL_SERVER_ERROR, null);
+            return new Representation<>(Response.Status.INTERNAL_SERVER_ERROR, null);
         }
+    }
+
+    /**
+     * <i>GET /users</i>
+     * <br>
+     * You must have Manager role to call this method
+     *
+     * @return List of all users as JSON
+     */
+    @GET
+    @RolesAllowed({"MANAGER", "ADMIN"})
+    public Representation<List<User>> list() {
+        return new Representation<>(Response.Status.OK, usersService.getUsers());
+    }
+
+    /**
+     * <i>GET /users/id</i>
+     * <br>
+     * You must have Manager role to call this method
+     *
+     * @param id user id
+     *
+     * @return Get user info as JSON
+     */
+    @GET
+    @RolesAllowed({"MANAGER", "ADMIN"})
+    @Path("{id}")
+    public Representation<User> getUser(@PathParam("id") int id) {
+        return new Representation<>(Response.Status.OK, usersService.getUser(id));
+    }
+
+    /**
+     * <i>GET /users/id</i>
+     * <br>
+     * You must have Manager role to call this method
+     *
+     * @param user User object as JSON
+     *
+     * @return Get user info as JSON
+     */
+    @GET
+    @RolesAllowed("USER")
+    @Path("me")
+    public Representation<User> getUser(@Auth User user) {
+        User userById = usersService.getUser(user.getName());
+        return new Representation<>(Response.Status.OK, userById);
+    }
+
+    /**
+     * <i>GET /users/id</i>
+     * <br>
+     * You must have Manager role to call this method
+     *
+     * @param user User object as JSON
+     *
+     * @return Get user info as JSON
+     */
+    @PUT
+    @RolesAllowed({"MANAGER", "ADMIN"})
+    @Consumes(MediaType.APPLICATION_JSON)
+    public Representation<User> editUser(final User user) {
+        return new Representation<>(Response.Status.OK, usersService.editUser(user));
+    }
+
+    /**
+     * <i>DELETE /users/id</i>
+     * <br>
+     * You must have Manager role to call this method
+     *
+     * @param id user id
+     *
+     * @return result string
+     */
+    @DELETE
+    @Path("{id}")
+    @RolesAllowed({"MANAGER", "ADMIN"})
+    public Representation<String> delete(@PathParam("id") final int id) {
+        return new Representation<>(Response.Status.OK, usersService.deleteUser(id));
     }
 }
