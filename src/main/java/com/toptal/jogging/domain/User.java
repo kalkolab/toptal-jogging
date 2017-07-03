@@ -16,7 +16,7 @@ public class User implements Principal {
     }
 
     @JsonProperty
-    private final int id;
+    private int id;
 
     @JsonProperty
     private final String name;
@@ -28,7 +28,6 @@ public class User implements Principal {
     private final Role role;
 
     public User(@JsonProperty("name") String name, @JsonProperty("password")  String password) {
-        this.id = 0;
         this.name = name;
         this.password = password;
         this.role = Role.USER;

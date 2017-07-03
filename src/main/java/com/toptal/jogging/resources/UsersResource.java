@@ -31,14 +31,40 @@ public class UsersResource {
      * <br>
      * Create new user
      *
+     * @param user User object as JSON containing name and password
+     *
      * @return created user with id, name, role
      */
     @POST
     @Path("/new")
     public Representation<User> createUser(@NotNull final User user) {
+        if (User.Role.USER != user.getRole()) {
+            return new Representation<User>(Response.Status.UNAUTHORIZED, null);
+        }
         User created = usersService.createUser(user);
         if (created != null) {
-            return new Representation<>(Response.Status.OK, user);
+            return new Representation<>(Response.Status.OK, created);
+        } else {
+            return new Representation<>(Response.Status.INTERNAL_SERVER_ERROR, null);
+        }
+    }
+
+    /**
+     * <i>POST /users/new</i>
+     * <br>
+     * Create new user
+     *
+     * @param user User object as JSON containing name and password
+     *
+     * @return created user with id, name, role
+     */
+    @POST
+    @RolesAllowed("ADMIN")
+    @Path("new/{role: admin|manager}")
+    public Representation<User> createUser(@PathParam("role") String role, @NotNull final User user) {
+        User created = usersService.createUser(user);
+        if (created != null) {
+            return new Representation<>(Response.Status.OK, created);
         } else {
             return new Representation<>(Response.Status.INTERNAL_SERVER_ERROR, null);
         }

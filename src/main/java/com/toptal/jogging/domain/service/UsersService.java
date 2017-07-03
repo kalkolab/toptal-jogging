@@ -11,7 +11,7 @@ import java.util.Objects;
 
 public abstract class UsersService {
   private static final String USER_NOT_FOUND = "User id %s not found.";
-  private static final String USER_EXISTS = "User id %s already exists.";
+  private static final String USER_EXISTS = "User %s already exists.";
   private static final String DATABASE_REACH_ERROR =
       "Could not reach the MySQL database. The database may be down or there may be network connectivity issues. Details: ";
   private static final String DATABASE_CONNECTION_ERROR =
