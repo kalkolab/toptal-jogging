@@ -21,7 +21,7 @@ public interface RunsDao {
     List<Run> getRuns(@Bind("userid") final long userid);
 
     @SqlUpdate("INSERT INTO runs(`userid`,`runtime`,`distance`, `rundate`, `lat`, `lon`, `weather`) " +
-            "VALUES (:userid, :runtime, :distance, :rundate, :lat, :lon, :weather)")
+            "VALUES (:userId, :duration, :distance, :date, :latitude, :longitude, :weather)")
     void createRun(@BindBean final Run run);
 
 //    @SqlUpdate("update users set name = coalesce(:name, name), password = coalesce(:password, password), role = coalesce(:role, role) where id = :id")

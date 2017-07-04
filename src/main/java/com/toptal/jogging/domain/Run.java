@@ -1,6 +1,7 @@
 package com.toptal.jogging.domain;
 
 import com.fasterxml.jackson.annotation.JsonFormat;
+import com.fasterxml.jackson.annotation.JsonIgnore;
 
 import java.util.Date;
 
@@ -12,8 +13,8 @@ public class Run {
 
     private int userId;
 
-    //time in seconds
-    private long time;
+    //duration in seconds
+    private long duration;
 
     //distance in km
     private float distance;
@@ -28,17 +29,17 @@ public class Run {
     public Run() {
     }
 
-    public Run(long time, float distance, Date date, Location location) {
-        this.time = time;
+    public Run(long duration, float distance, Date date, Location location) {
+        this.duration = duration;
         this.distance = distance;
         this.date = date;
         this.location = location;
     }
 
-    public Run(int id, int userId, long time, float distance, Date date, Location location, String weather) {
+    public Run(int id, int userId, long duration, float distance, Date date, Location location, String weather) {
         this.id = id;
         this.userId = userId;
-        this.time = time;
+        this.duration = duration;
         this.distance = distance;
         this.date = date;
         this.location = location;
@@ -61,12 +62,12 @@ public class Run {
         this.userId = userId;
     }
 
-    public long getTime() {
-        return time;
+    public long getDuration() {
+        return duration;
     }
 
-    public void setTime(long time) {
-        this.time = time;
+    public void setDuration(long duration) {
+        this.duration = duration;
     }
 
     public double getDistance() {
@@ -94,6 +95,16 @@ public class Run {
         this.location = location;
     }
 
+    @JsonIgnore
+    public float getLatitude() {
+        return location.getLatitude();
+    }
+
+    @JsonIgnore
+    public float getLongitude() {
+        return location.getLongitude();
+    }
+
     public String getWeather() {
         return weather;
     }
@@ -103,8 +114,8 @@ public class Run {
     }
 
     public float getAverageSpeed() {
-        return distance == 0 || time == 0
+        return distance == 0 || duration == 0
                 ? 0
-                :distance/time*3600;
+                :distance/ duration *3600;
     }
 }
