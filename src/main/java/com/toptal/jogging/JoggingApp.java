@@ -1,7 +1,9 @@
 package com.toptal.jogging;
 
 import com.toptal.jogging.domain.User;
+import com.toptal.jogging.domain.service.RunsService;
 import com.toptal.jogging.domain.service.UsersService;
+import com.toptal.jogging.resources.RunsResource;
 import com.toptal.jogging.resources.UsersResource;
 import com.toptal.jogging.security.JoggingAuthenticator;
 import com.toptal.jogging.security.JoggingUserAuthorizer;
@@ -42,6 +44,7 @@ public class JoggingApp extends Application<JoggingConfiguration> {
         environment.jersey().register(new AuthValueFactoryProvider.Binder(User.class));
 
         environment.jersey().register(new UsersResource(dbi.onDemand(UsersService.class)));
+        environment.jersey().register(new RunsResource(dbi.onDemand(RunsService.class)));
 
 //        environment.jersey().register(unauthorizedHandler);
     }

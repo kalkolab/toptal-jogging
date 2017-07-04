@@ -1,7 +1,8 @@
 package com.toptal.jogging.domain.service;
 
+import com.toptal.jogging.domain.Run;
 import com.toptal.jogging.domain.User;
-import com.toptal.jogging.domain.dao.UsersDao;
+import com.toptal.jogging.domain.dao.RunsDao;
 import org.skife.jdbi.v2.sqlobject.CreateSqlObject;
 
 import javax.ws.rs.WebApplicationException;
@@ -9,9 +10,8 @@ import javax.ws.rs.core.Response;
 import java.util.List;
 import java.util.Objects;
 
-public abstract class UsersService {
-  private static final String USER_NOT_FOUND = "User id %s not found.";
-  private static final String USER_EXISTS = "User %s already exists.";
+public abstract class RunsService {
+  private static final String RUN_NOT_FOUND = "Run id %s not found.";
   private static final String DATABASE_REACH_ERROR =
       "Could not reach the MySQL database. The database may be down or there may be network connectivity issues. Details: ";
   private static final String DATABASE_CONNECTION_ERROR =
@@ -22,66 +22,61 @@ public abstract class UsersService {
   private static final String UNEXPECTED_ERROR = "An unexpected error occurred while deleting User.";
 
   @CreateSqlObject
-  abstract UsersDao usersDao();
+  abstract RunsDao runsDao();
 
-  public List<User> getUsers() {
-    return usersDao().getUsers();
+  public List<Run> getRuns() {
+    return runsDao().getRuns();
   }
 
-  public User getUser(int id) {
-    User user = usersDao().getUser(id);
-    if (Objects.isNull(user)) {
-      throw new WebApplicationException(String.format(USER_NOT_FOUND, id), Response.Status.NOT_FOUND);
+  public Run getRun(int id) {
+    Run run = runsDao().getRun(id);
+    if (Objects.isNull(run)) {
+      throw new WebApplicationException(String.format(RUN_NOT_FOUND, id), Response.Status.NOT_FOUND);
     }
-    return user;
+    return run;
   }
 
-  public User getUser(String login) {
-    User user = usersDao().getUser(login);
-    if (Objects.isNull(user)) {
-      throw new WebApplicationException(String.format(USER_NOT_FOUND, login), Response.Status.NOT_FOUND);
-    }
-    return user;
+  public List<Run> getRuns(int userId) {
+    List<Run> runs = runsDao().getRuns(userId);
+    return runs;
   }
 
-  public User createUser(User user) {
-    if (usersDao().getUser(user.getName()) != null) {
-      throw new WebApplicationException(String.format(USER_EXISTS, user.getName()), Response.Status.BAD_REQUEST);
-    }
-    usersDao().createUser(user);
-    return usersDao().getUser(usersDao().lastInsertId());
+  public Run createRun(User user, Run run) {
+    run.setUserId(user.getId());
+    runsDao().createRun(run);
+    return runsDao().getRun(runsDao().lastInsertId());
   }
 
-  public User editUser(User user) {
-    if (Objects.isNull(usersDao().getUser(user.getId()))) {
-      throw new WebApplicationException(String.format(USER_NOT_FOUND, user.getId()),
-          Response.Status.NOT_FOUND);
-    }
-    usersDao().editUser(user);
-    return usersDao().getUser(user.getId());
-  }
-
-  public String deleteUser(final int id) {
-    User user = usersDao().getUser(id);
-
-    if (user == null) {
-      throw new WebApplicationException(String.format(USER_NOT_FOUND, id), Response.Status.NOT_FOUND);
-    }
-
-    if (user.getRole() == User.Role.ADMIN) {
-      throw new WebApplicationException("Can't delete admin", Response.Status.METHOD_NOT_ALLOWED);
-    }
-
-    int result = usersDao().deleteUser(id);
-    switch (result) {
-      case 1:
-        return SUCCESS;
-      case 0:
-        throw new WebApplicationException(String.format(USER_NOT_FOUND, id), Response.Status.NOT_FOUND);
-      default:
-        throw new WebApplicationException(UNEXPECTED_ERROR, Response.Status.INTERNAL_SERVER_ERROR);
-    }
-  }
+//  public User editUser(User user) {
+//    if (Objects.isNull(runsDao().getUser(user.getId()))) {
+//      throw new WebApplicationException(String.format(USER_NOT_FOUND, user.getId()),
+//          Response.Status.NOT_FOUND);
+//    }
+//    runsDao().editUser(user);
+//    return runsDao().getUser(user.getId());
+//  }
+//
+//  public String deleteUser(final int id) {
+//    User user = runsDao().getUser(id);
+//
+//    if (user == null) {
+//      throw new WebApplicationException(String.format(USER_NOT_FOUND, id), Response.Status.NOT_FOUND);
+//    }
+//
+//    if (user.getRole() == User.Role.ADMIN) {
+//      throw new WebApplicationException("Can't delete admin", Response.Status.METHOD_NOT_ALLOWED);
+//    }
+//
+//    int result = runsDao().deleteUser(id);
+//    switch (result) {
+//      case 1:
+//        return SUCCESS;
+//      case 0:
+//        throw new WebApplicationException(String.format(USER_NOT_FOUND, id), Response.Status.NOT_FOUND);
+//      default:
+//        throw new WebApplicationException(UNEXPECTED_ERROR, Response.Status.INTERNAL_SERVER_ERROR);
+//    }
+//  }
 
 //  public String performHealthCheck() {
 //    try {
