@@ -17,5 +17,6 @@ create table runs (
  lat float,
  lon float,
  weather VARCHAR(1024),
- PRIMARY KEY (ID)
+ PRIMARY KEY (ID),
+  FOREIGN KEY (userid) REFERENCES users(id)
 );
