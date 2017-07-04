@@ -1,16 +1,21 @@
 package com.toptal.jogging.resources;
 
+import com.toptal.jogging.domain.Location;
 import com.toptal.jogging.domain.Run;
 import com.toptal.jogging.domain.User;
 import com.toptal.jogging.domain.service.RunsService;
 import com.toptal.jogging.model.Representation;
 import io.dropwizard.auth.Auth;
+import tk.plogitech.darksky.api.jackson.DarkSkyJacksonClient;
+import tk.plogitech.darksky.forecast.*;
+import tk.plogitech.darksky.forecast.model.Forecast;
 
 import javax.annotation.security.PermitAll;
 import javax.validation.constraints.NotNull;
 import javax.ws.rs.*;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
+import java.util.Date;
 import java.util.List;
 
 /**
@@ -23,9 +28,12 @@ import java.util.List;
 @Produces(MediaType.APPLICATION_JSON)
 public class RunsResource {
     private final RunsService runsService;
+    private final DarkSkyJacksonClient weatherClient = new DarkSkyJacksonClient();
+    private final String forecastKey;
 
-    public RunsResource(RunsService runsService) {
+    public RunsResource(RunsService runsService, String forecastKey) {
         this.runsService = runsService;
+        this.forecastKey = forecastKey;
     }
 
     /**
@@ -40,6 +48,8 @@ public class RunsResource {
     @POST
     @Path("/new")
     public Representation<Run> createRun(@Auth User user, @NotNull final Run run) {
+        run.setUserId(user.getId());
+        run.setWeather(getWeather(run.getLocation(), run.getDate()));
         Run created = runsService.createRun(user, run);
         if (created != null) {
             return new Representation<>(Response.Status.OK, created);
@@ -82,7 +92,6 @@ public class RunsResource {
      * <br>
      * You must have Manager role to call this method
      *
-     * @param user Run object as JSON
      *
      * @return Get user info as JSON
      */
@@ -125,4 +134,22 @@ public class RunsResource {
 //    public Representation<String> delete(@PathParam("id") final int id) {
 //        return new Representation<>(Response.Status.OK, runsService.deleteRun(id));
 //    }
+
+    private String getWeather(Location location, Date date) {
+        try {
+            ForecastRequest request = new ForecastRequestBuilder()
+                    .key(new APIKey(forecastKey))
+                    .location(new GeoCoordinates(new Longitude(location.getLongitude()), new Latitude(location.getLatitude())))
+                    .time(date.toInstant())
+                    .language(ForecastRequestBuilder.Language.en)
+                    .units(ForecastRequestBuilder.Units.si)
+                    .build();
+
+            DarkSkyJacksonClient client = new DarkSkyJacksonClient();
+            Forecast forecast = client.forecast(request);
+            return forecast.getCurrently().getSummary() + ", " + forecast.getCurrently().getTemperature();
+        } catch (ForecastException e) {
+            return null;
+        }
+    }
 }

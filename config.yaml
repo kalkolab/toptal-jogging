@@ -20,3 +20,5 @@ server:
       keyStorePath: keystore.jks
       keyStorePassword: password
       validateCerts: false
+
+forecast.io.key: 2d5443823573f2033851756d66307a96

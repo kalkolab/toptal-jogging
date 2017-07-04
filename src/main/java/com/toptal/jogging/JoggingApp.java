@@ -44,7 +44,7 @@ public class JoggingApp extends Application<JoggingConfiguration> {
         environment.jersey().register(new AuthValueFactoryProvider.Binder(User.class));
 
         environment.jersey().register(new UsersResource(dbi.onDemand(UsersService.class)));
-        environment.jersey().register(new RunsResource(dbi.onDemand(RunsService.class)));
+        environment.jersey().register(new RunsResource(dbi.onDemand(RunsService.class), configuration.getForecastLibKey()));
 
 //        environment.jersey().register(unauthorizedHandler);
     }

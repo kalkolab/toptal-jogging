@@ -96,12 +96,12 @@ public class Run {
     }
 
     @JsonIgnore
-    public float getLatitude() {
+    public double getLatitude() {
         return location.getLatitude();
     }
 
     @JsonIgnore
-    public float getLongitude() {
+    public double getLongitude() {
         return location.getLongitude();
     }
 

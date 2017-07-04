@@ -53,6 +53,13 @@
       <version>3.8.1</version>
       <scope>test</scope>
     </dependency>
+
+    <dependency>
+      <groupId>tk.plogitech</groupId>
+      <artifactId>darksky-forecast-api-jackson</artifactId>
+      <version>0.10</version>
+    </dependency>
+
   </dependencies>
 
 

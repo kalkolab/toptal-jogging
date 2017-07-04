@@ -26,4 +26,11 @@ public class JoggingConfiguration extends Configuration {
     public void setDataSourceFactory(final DataSourceFactory dataSourceFactory) {
         this.dataSourceFactory = dataSourceFactory;
     }
+
+    @JsonProperty("forecast.io.key")
+    private String forecastLibKey;
+
+    public String getForecastLibKey() {
+        return forecastLibKey;
+    }
 }

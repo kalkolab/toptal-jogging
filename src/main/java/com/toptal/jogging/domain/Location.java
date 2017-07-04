@@ -4,8 +4,8 @@ package com.toptal.jogging.domain;
  * Created by Artem on 03.07.2017.
  */
 public class Location {
-    private float latitude;
-    private float longitude;
+    private double latitude;
+    private double longitude;
 
     public Location() {
     }
@@ -15,19 +15,19 @@ public class Location {
         this.longitude = longitude;
     }
 
-    public float getLatitude() {
+    public double getLatitude() {
         return latitude;
     }
 
-    public void setLatitude(float latitude) {
+    public void setLatitude(double latitude) {
         this.latitude = latitude;
     }
 
-    public float getLongitude() {
+    public double getLongitude() {
         return longitude;
     }
 
-    public void setLongitude(float longitude) {
+    public void setLongitude(double longitude) {
         this.longitude = longitude;
     }
 }

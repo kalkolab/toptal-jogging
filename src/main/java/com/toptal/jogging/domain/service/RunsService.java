@@ -42,7 +42,6 @@ public abstract class RunsService {
   }
 
   public Run createRun(User user, Run run) {
-    run.setUserId(user.getId());
     runsDao().createRun(run);
     return runsDao().getRun(runsDao().lastInsertId());
   }
