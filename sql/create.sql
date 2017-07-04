@@ -8,11 +8,14 @@ create table users (
  PRIMARY KEY (ID)
 );
 
-insert into users (ID, name, password, role)
-values (1, 'admin', 'admin', 'ADMIN');
-
-insert into users (ID, name, password, role)
-values (2, 'manager', 'manager', 'MANAGER');
-
-insert into users (ID, name, password, role)
-values (3, 'user', 'user', 'USER');
+create table runs (
+ id int not null AUTO_INCREMENT,
+ userid int not null,
+ runtime long not null,
+ distance float not null,
+ rundate DATE not null,
+ lat float,
+ lon float,
+ weather VARCHAR(1024),
+ PRIMARY KEY (ID)
+);
