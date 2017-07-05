@@ -20,13 +20,14 @@ import java.util.Date;
 import java.util.List;
 
 /**
- * REST API for users control
+ * REST API for runs control
  *
  * Created by Artem on 26.06.2017.
  */
 @Path("/runs")
-@PermitAll
+@RolesAllowed({"USER", "MANAGER"})
 @Produces(MediaType.APPLICATION_JSON)
+@Consumes(MediaType.APPLICATION_JSON)
 public class RunsResource {
     private final RunsService runsService;
     private final DarkSkyJacksonClient weatherClient = new DarkSkyJacksonClient();
@@ -48,6 +49,7 @@ public class RunsResource {
      */
     @POST
     @Path("/new")
+    @RolesAllowed("USER")
     public Representation<Run> createRun(@Auth User user, @NotNull final Run run) {
         run.setUserId(user.getId());
         run.setWeather(getWeather(run.getLocation(), run.getDate()));
@@ -66,9 +68,14 @@ public class RunsResource {
      * @return List of all runs for user
      */
     @GET
-    @PermitAll
     public Representation<List<Run>> list(@Auth User user, @QueryParam("page") Integer page, @QueryParam("per_page") Integer perPage) {
-        return new Representation<>(Response.Status.OK, runsService.getRuns(user.getId(), page, perPage));
+        if (user.getRole() == User.Role.USER) {
+            return new Representation<>(Response.Status.OK, runsService.getRuns(user.getId(), page, perPage));
+        } else if (user.getRole() == User.Role.ADMIN) {
+            return new Representation<>(Response.Status.OK, runsService.getRuns(page, perPage));
+        } else {
+            return new Representation<>(Response.Status.METHOD_NOT_ALLOWED, null);
+        }
     }
 
     /**
@@ -78,7 +85,7 @@ public class RunsResource {
      * @return List of all runs for user with userId
      */
     @GET
-    @RolesAllowed({"ADMIN", "MANAGER"})
+    @RolesAllowed({"ADMIN"})
     @Path("/user/{userId}")
     public Representation<List<Run>> list(@PathParam("userId") int userId, @QueryParam("page") Integer page, @QueryParam("per_page") Integer perPage) {
         return new Representation<>(Response.Status.OK, runsService.getRuns(userId, page, perPage));
@@ -161,8 +168,7 @@ public class RunsResource {
                     .units(ForecastRequestBuilder.Units.si)
                     .build();
 
-            DarkSkyJacksonClient client = new DarkSkyJacksonClient();
-            Forecast forecast = client.forecast(request);
+            Forecast forecast = weatherClient.forecast(request);
             return forecast.getCurrently().getSummary() + ", " + forecast.getCurrently().getTemperature();
         } catch (ForecastException e) {
             return null;
