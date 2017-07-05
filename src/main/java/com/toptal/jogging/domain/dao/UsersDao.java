@@ -11,8 +11,11 @@ import java.util.List;
 
 @RegisterMapper(UsersMapper.class)
 public interface UsersDao {
-    @SqlQuery("select * from users;")
+    @SqlQuery("select * from users order by id;")
     List<User> getUsers();
+
+    @SqlQuery("select * from users order by id limit :skip, :perPage;")
+    List<User> getUsers(@Bind("skip") final int skip, @Bind("perPage") final int perPage);
 
     @SqlQuery("select * from users where id = :id")
     User getUser(@Bind("id") final long id);

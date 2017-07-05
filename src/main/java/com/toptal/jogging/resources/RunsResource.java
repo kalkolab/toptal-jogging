@@ -11,6 +11,7 @@ import tk.plogitech.darksky.forecast.*;
 import tk.plogitech.darksky.forecast.model.Forecast;
 
 import javax.annotation.security.PermitAll;
+import javax.annotation.security.RolesAllowed;
 import javax.validation.constraints.NotNull;
 import javax.ws.rs.*;
 import javax.ws.rs.core.MediaType;
@@ -65,9 +66,24 @@ public class RunsResource {
      * @return List of all runs for user
      */
     @GET
-    public Representation<List<Run>> list(@Auth User user) {
-        return new Representation<>(Response.Status.OK, runsService.getRuns(user.getId()));
+    @PermitAll
+    public Representation<List<Run>> list(@Auth User user, @QueryParam("page") Integer page, @QueryParam("per_page") Integer perPage) {
+        return new Representation<>(Response.Status.OK, runsService.getRuns(user.getId(), page, perPage));
     }
+
+    /**
+     * <i>GET /runs/userId</i>
+     * <br>
+     *
+     * @return List of all runs for user with userId
+     */
+    @GET
+    @RolesAllowed({"ADMIN", "MANAGER"})
+    @Path("/user/{userId}")
+    public Representation<List<Run>> list(@PathParam("userId") int userId, @QueryParam("page") Integer page, @QueryParam("per_page") Integer perPage) {
+        return new Representation<>(Response.Status.OK, runsService.getRuns(userId, page, perPage));
+    }
+
 
     /**
      * <i>GET /runs/id</i>
@@ -82,7 +98,7 @@ public class RunsResource {
     @Path("{id}")
     public Representation<Run> getRun(@Auth User user, @PathParam("id") int id) {
         Run run = runsService.getRun(id);
-        if (run.getUserId() == user.getId())
+        if (run.getUserId() == user.getId() || user.getRole() == User.Role.ADMIN)
             return new Representation<>(Response.Status.OK, run);
         else return new Representation<>(Response.Status.UNAUTHORIZED, null);
     }

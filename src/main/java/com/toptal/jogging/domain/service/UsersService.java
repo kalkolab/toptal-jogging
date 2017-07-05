@@ -24,8 +24,11 @@ public abstract class UsersService {
   @CreateSqlObject
   abstract UsersDao usersDao();
 
-  public List<User> getUsers() {
-    return usersDao().getUsers();
+  public List<User> getUsers(Integer page, Integer perPage) {
+    if (page == null) page = 1;
+    return perPage != null
+            ? usersDao().getUsers((page-1)*perPage, perPage)
+            : usersDao().getUsers();
   }
 
   public User getUser(int id) {

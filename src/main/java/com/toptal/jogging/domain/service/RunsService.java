@@ -13,19 +13,23 @@ import java.util.Objects;
 public abstract class RunsService {
   private static final String RUN_NOT_FOUND = "Run id %s not found.";
   private static final String DATABASE_REACH_ERROR =
-      "Could not reach the MySQL database. The database may be down or there may be network connectivity issues. Details: ";
+          "Could not reach the MySQL database. The database may be down or there may be network connectivity issues. Details: ";
   private static final String DATABASE_CONNECTION_ERROR =
-      "Could not create a connection to the MySQL database. The database configurations are likely incorrect. Details: ";
+          "Could not create a connection to the MySQL database. The database configurations are likely incorrect. Details: ";
   private static final String DATABASE_UNEXPECTED_ERROR =
-      "Unexpected error occurred while attempting to reach the database. Details: ";
+          "Unexpected error occurred while attempting to reach the database. Details: ";
   private static final String SUCCESS = "Success...";
   private static final String UNEXPECTED_ERROR = "An unexpected error occurred while deleting User.";
 
   @CreateSqlObject
   abstract RunsDao runsDao();
 
-  public List<Run> getRuns() {
-    return runsDao().getRuns();
+  public List<Run> getRuns(Integer page, Integer perPage) {
+    if (page == null) page = 1;
+
+    return perPage != null
+            ? runsDao().getRuns(perPage*(page-1), perPage)
+            : runsDao().getRuns();
   }
 
   public Run getRun(int id) {
@@ -36,9 +40,12 @@ public abstract class RunsService {
     return run;
   }
 
-  public List<Run> getRuns(int userId) {
-    List<Run> runs = runsDao().getRuns(userId);
-    return runs;
+  public List<Run> getRuns(int userId, Integer page, Integer perPage) {
+    if (page == null) page = 1;
+
+    return perPage != null
+            ? runsDao().getRuns(userId, perPage*(page-1), perPage)
+            : runsDao().getRuns(userId);
   }
 
   public Run createRun(User user, Run run) {

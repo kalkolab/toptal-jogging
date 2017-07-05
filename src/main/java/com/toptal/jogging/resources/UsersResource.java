@@ -79,8 +79,8 @@ public class UsersResource {
      */
     @GET
     @RolesAllowed({"MANAGER", "ADMIN"})
-    public Representation<List<User>> list() {
-        return new Representation<>(Response.Status.OK, usersService.getUsers());
+    public Representation<List<User>> list(@QueryParam("page") Integer page, @QueryParam("per_page") Integer perPage) {
+        return new Representation<>(Response.Status.OK, usersService.getUsers(page, perPage));
     }
 
     /**
