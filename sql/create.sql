@@ -19,4 +19,6 @@ create table runs (
  weather VARCHAR(1024),
  PRIMARY KEY (ID),
   FOREIGN KEY (userid) REFERENCES users(id)
+   ON DELETE CASCADE
+   ON UPDATE CASCADE
 );

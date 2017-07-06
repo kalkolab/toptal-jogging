@@ -30,9 +30,11 @@ public interface RunsDao {
             "VALUES (:userId, :duration, :distance, :date, :latitude, :longitude, :weather)")
     void createRun(@BindBean final Run run);
 
-//    @SqlUpdate("update users set name = coalesce(:name, name), password = coalesce(:password, password), role = coalesce(:role, role) where id = :id")
-//    void editUser(@BindBean final User user);
-//
+    @SqlUpdate("UPDATE runs SET runtime = coalesce(:runtime, runtime), rundate = coalesce(:rundate, rundate)" +
+            ", lat = coalesce(:lat, lat), lon = coalesce(:lon, lon), weather = coalesce(:weather, weather))" +
+            "WHERE id = :id")
+    void editRun(@BindBean final Run run);
+
 //    @SqlUpdate("delete from users where id = :id")
 //    int deleteUser(@Bind("id") final int id);
 

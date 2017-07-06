@@ -12,6 +12,7 @@ import java.util.Objects;
 
 public abstract class RunsService {
   private static final String RUN_NOT_FOUND = "Run id %s not found.";
+  private static final String EDIT_NOT_ALLOWED = "You can only edit your own entries";
   private static final String DATABASE_REACH_ERROR =
           "Could not reach the MySQL database. The database may be down or there may be network connectivity issues. Details: ";
   private static final String DATABASE_CONNECTION_ERROR =
@@ -53,14 +54,18 @@ public abstract class RunsService {
     return runsDao().getRun(runsDao().lastInsertId());
   }
 
-//  public User editUser(User user) {
-//    if (Objects.isNull(runsDao().getUser(user.getId()))) {
-//      throw new WebApplicationException(String.format(USER_NOT_FOUND, user.getId()),
-//          Response.Status.NOT_FOUND);
-//    }
-//    runsDao().editUser(user);
-//    return runsDao().getUser(user.getId());
-//  }
+  public Run editRun(User user, Run run) {
+    Run existingRun = runsDao().getRun(run.getId());
+    if (existingRun == null) {
+      throw new WebApplicationException(String.format(RUN_NOT_FOUND, run.getId()),
+              Response.Status.NOT_FOUND);
+    }
+    if (existingRun.getUserId() != user.getId() && user.getRole() != User.Role.ADMIN) {
+      throw new WebApplicationException(EDIT_NOT_ALLOWED, Response.Status.UNAUTHORIZED);
+    }
+    runsDao().editRun(run);
+    return runsDao().getRun(run.getId());
+  }
 //
 //  public String deleteUser(final int id) {
 //    User user = runsDao().getUser(id);

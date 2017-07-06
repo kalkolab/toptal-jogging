@@ -98,7 +98,7 @@ public class RunsResource {
      *
      * @param id run id
      *
-     * @return Get user info as JSON
+     * @return run info as JSON
      */
     @GET
     @PermitAll
@@ -110,37 +110,21 @@ public class RunsResource {
         else return new Representation<>(Response.Status.UNAUTHORIZED, null);
     }
 
+
     /**
-     * <i>GET /users/id</i>
+     * <i>PUT /runs/id</i>
      * <br>
      * You must have Manager role to call this method
      *
+     * @param user Run object as JSON
      *
      * @return Get user info as JSON
      */
-//    @GET
-//    @RolesAllowed("USER")
-//    @Path("me")
-//    public Representation<Run> getRun(@Auth Run user) {
-//        Run userById = runsService.getRun(user.getName());
-//        return new Representation<>(Response.Status.OK, userById);
-//    }
-//
-//    /**
-//     * <i>GET /users/id</i>
-//     * <br>
-//     * You must have Manager role to call this method
-//     *
-//     * @param user Run object as JSON
-//     *
-//     * @return Get user info as JSON
-//     */
-//    @PUT
-//    @RolesAllowed({"MANAGER", "ADMIN"})
-//    @Consumes(MediaType.APPLICATION_JSON)
-//    public Representation<Run> editRun(final Run user) {
-//        return new Representation<>(Response.Status.OK, runsService.editRun(user));
-//    }
+    @PUT
+    @Consumes(MediaType.APPLICATION_JSON)
+    public Representation<Run> editRun(@Auth User user, final Run run) {
+        return new Representation<>(Response.Status.OK, runsService.editRun(user, run));
+    }
 //
 //    /**
 //     * <i>DELETE /users/id</i>
