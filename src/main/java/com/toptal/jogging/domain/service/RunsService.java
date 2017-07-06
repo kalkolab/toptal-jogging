@@ -67,27 +67,27 @@ public abstract class RunsService {
     return runsDao().getRun(run.getId());
   }
 //
-//  public String deleteUser(final int id) {
-//    User user = runsDao().getUser(id);
-//
-//    if (user == null) {
-//      throw new WebApplicationException(String.format(USER_NOT_FOUND, id), Response.Status.NOT_FOUND);
-//    }
-//
-//    if (user.getRole() == User.Role.ADMIN) {
-//      throw new WebApplicationException("Can't delete admin", Response.Status.METHOD_NOT_ALLOWED);
-//    }
-//
-//    int result = runsDao().deleteUser(id);
-//    switch (result) {
-//      case 1:
-//        return SUCCESS;
-//      case 0:
-//        throw new WebApplicationException(String.format(USER_NOT_FOUND, id), Response.Status.NOT_FOUND);
-//      default:
-//        throw new WebApplicationException(UNEXPECTED_ERROR, Response.Status.INTERNAL_SERVER_ERROR);
-//    }
-//  }
+  public String deleteRun(User user, final int runId) {
+    Run run = runsDao().getRun(runId);
+
+    if (run == null) {
+      throw new WebApplicationException(String.format(RUN_NOT_FOUND, runId), Response.Status.NOT_FOUND);
+    }
+
+    if (run.getUserId() != user.getId() && user.getRole() != User.Role.ADMIN) {
+      throw new WebApplicationException(EDIT_NOT_ALLOWED, Response.Status.METHOD_NOT_ALLOWED);
+    }
+
+    int result = runsDao().deleteRun(runId);
+    switch (result) {
+      case 1:
+        return SUCCESS;
+      case 0:
+        throw new WebApplicationException(String.format(RUN_NOT_FOUND, runId), Response.Status.NOT_FOUND);
+      default:
+        throw new WebApplicationException(UNEXPECTED_ERROR, Response.Status.INTERNAL_SERVER_ERROR);
+    }
+  }
 
 //  public String performHealthCheck() {
 //    try {

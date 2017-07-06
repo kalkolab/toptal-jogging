@@ -35,8 +35,8 @@ public interface RunsDao {
             "WHERE id = :id")
     void editRun(@BindBean final Run run);
 
-//    @SqlUpdate("delete from users where id = :id")
-//    int deleteUser(@Bind("id") final int id);
+    @SqlUpdate("delete from runs where id = :id")
+    int deleteRun(@Bind("id") final int id);
 
     @SqlQuery("select last_insert_id();")
     int lastInsertId();

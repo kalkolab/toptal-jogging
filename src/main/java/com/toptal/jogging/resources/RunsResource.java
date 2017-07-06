@@ -10,7 +10,6 @@ import tk.plogitech.darksky.api.jackson.DarkSkyJacksonClient;
 import tk.plogitech.darksky.forecast.*;
 import tk.plogitech.darksky.forecast.model.Forecast;
 
-import javax.annotation.security.PermitAll;
 import javax.annotation.security.RolesAllowed;
 import javax.validation.constraints.NotNull;
 import javax.ws.rs.*;
@@ -101,7 +100,6 @@ public class RunsResource {
      * @return run info as JSON
      */
     @GET
-    @PermitAll
     @Path("{id}")
     public Representation<Run> getRun(@Auth User user, @PathParam("id") int id) {
         Run run = runsService.getRun(id);
@@ -125,22 +123,21 @@ public class RunsResource {
     public Representation<Run> editRun(@Auth User user, final Run run) {
         return new Representation<>(Response.Status.OK, runsService.editRun(user, run));
     }
-//
-//    /**
-//     * <i>DELETE /users/id</i>
-//     * <br>
-//     * You must have Manager role to call this method
-//     *
-//     * @param id user id
-//     *
-//     * @return result string
-//     */
-//    @DELETE
-//    @Path("{id}")
-//    @RolesAllowed({"MANAGER", "ADMIN"})
-//    public Representation<String> delete(@PathParam("id") final int id) {
-//        return new Representation<>(Response.Status.OK, runsService.deleteRun(id));
-//    }
+
+    /**
+     * <i>DELETE /runs/id</i>
+     * <br>
+     * Delete one of user's runs
+     *
+     * @param id run id
+     *
+     * @return result string
+     */
+    @DELETE
+    @Path("{id}")
+    public Representation<String> delete(@Auth User user, @PathParam("id") final int id) {
+        return new Representation<>(Response.Status.OK, runsService.deleteRun(user, id));
+    }
 
     private String getWeather(Location location, Date date) {
         try {
