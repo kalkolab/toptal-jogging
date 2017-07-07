@@ -11,19 +11,19 @@ import java.util.List;
 
 @RegisterMapper(RunsMapper.class)
 public interface RunsDao {
-    @SqlQuery("select * from runs order by id;")
+    @SqlQuery("select * from runs order by rundate;")
     List<Run> getRuns();
 
-    @SqlQuery("select * from runs order by id limit :skip, :perPage;")
+    @SqlQuery("select * from runs order by rundate limit :skip, :perPage;")
     List<Run> getRuns(@Bind("skip") final int skip, @Bind("perPage") final int perPage);
 
-    @SqlQuery("select * from runs where id = :id")
+    @SqlQuery("select * from runs where id = :id order by rundate")
     Run getRun(@Bind("id") final long id);
 
-    @SqlQuery("select * from runs where userid = :userid order by id")
+    @SqlQuery("select * from runs where userid = :userid order by rundate ")
     List<Run> getRuns(@Bind("userid") final long userid);
 
-    @SqlQuery("select * from runs where userid = :userid order by id limit :skip, :perPage;")
+    @SqlQuery("select * from runs where userid = :userid order by rundate limit :skip, :perPage;")
     List<Run> getRuns(@Bind("userid") final long userid, @Bind("skip") final int skip, @Bind("perPage") final int perPage);
 
     @SqlUpdate("INSERT INTO runs(`userid`,`runtime`,`distance`, `rundate`, `lat`, `lon`, `weather`) " +

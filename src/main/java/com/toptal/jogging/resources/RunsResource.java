@@ -24,6 +24,7 @@ import java.util.Comparator;
 import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 /**
  * REST API for runs control
@@ -96,7 +97,7 @@ public class RunsResource {
         List<Run> allRuns = runsService.getRuns(user.getId(), null, null);
         Map<Pair<LocalDate, LocalDate>, List<Run>> grouppedRuns = allRuns.stream().collect(Collectors.groupingBy(run -> dateToWeek(run.getDate())));
 
-        List<WeeklyRuns> weeklyAverages = grouppedRuns.entrySet().stream().map(entry -> {
+        Stream<WeeklyRuns> weeklyAverages = grouppedRuns.entrySet().stream().map(entry -> {
             float dist = 0;
             long duration = 0;
             for (Run run : entry.getValue()) {
@@ -104,11 +105,15 @@ public class RunsResource {
                 duration += run.getDuration();
             }
             return new WeeklyRuns(user.getId(), entry.getKey().getLeft(), entry.getKey().getRight(), entry.getValue().size(), duration, dist);
-        })
-                .sorted(Comparator.comparing(wa -> wa.getWeekStart()))
-                .collect(Collectors.toList());
+        }).sorted(Comparator.comparing(wa -> wa.getWeekStart()));
 
-        return new Representation<>(Response.Status.OK, weeklyAverages);
+        if (perPage != null) {
+            if (page != null) {
+                weeklyAverages = weeklyAverages.skip((page-1) * perPage);
+            }
+            weeklyAverages = weeklyAverages.limit(perPage);
+        }
+        return new Representation<>(Response.Status.OK, weeklyAverages.collect(Collectors.toList()));
     }
 
     private static Pair<LocalDate, LocalDate> dateToWeek(LocalDate date) {
