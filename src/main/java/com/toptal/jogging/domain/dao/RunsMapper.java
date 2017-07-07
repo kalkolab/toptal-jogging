@@ -28,7 +28,7 @@ public class RunsMapper implements ResultSetMapper<Run> {
                 resultSet.getInt(USER_ID),
                 resultSet.getLong(RUNTIME),
                 resultSet.getFloat(DISTANCE),
-                resultSet.getDate(RUNDATE),
+                resultSet.getDate(RUNDATE).toLocalDate(),
                 new Location(resultSet.getFloat(LATITUDE), resultSet.getFloat(LONGITUDE)),
                 resultSet.getString(WEATHER));
     }

@@ -3,7 +3,7 @@ package com.toptal.jogging.domain;
 import com.fasterxml.jackson.annotation.JsonFormat;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 
-import java.util.Date;
+import java.time.LocalDate;
 
 /**
  * Created by Artem on 03.07.2017.
@@ -19,7 +19,7 @@ public class Run {
     //distance in km
     private float distance;
 
-    private Date date;
+    private LocalDate date;
 
     private Location location;
 
@@ -29,14 +29,14 @@ public class Run {
     public Run() {
     }
 
-    public Run(long duration, float distance, Date date, Location location) {
+    public Run(long duration, float distance, LocalDate date, Location location) {
         this.duration = duration;
         this.distance = distance;
         this.date = date;
         this.location = location;
     }
 
-    public Run(int id, int userId, long duration, float distance, Date date, Location location, String weather) {
+    public Run(int id, int userId, long duration, float distance, LocalDate date, Location location, String weather) {
         this.id = id;
         this.userId = userId;
         this.duration = duration;
@@ -79,11 +79,11 @@ public class Run {
     }
 
     @JsonFormat(shape=JsonFormat.Shape.STRING, pattern="yyyy-MM-dd")
-    public Date getDate() {
+    public LocalDate getDate() {
         return date;
     }
 
-    public void setDate(Date date) {
+    public void setDate(LocalDate date) {
         this.date = date;
     }
 

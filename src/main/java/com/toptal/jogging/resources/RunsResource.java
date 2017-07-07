@@ -3,9 +3,11 @@ package com.toptal.jogging.resources;
 import com.toptal.jogging.domain.Location;
 import com.toptal.jogging.domain.Run;
 import com.toptal.jogging.domain.User;
+import com.toptal.jogging.domain.WeeklyRuns;
 import com.toptal.jogging.domain.service.RunsService;
 import com.toptal.jogging.model.Representation;
 import io.dropwizard.auth.Auth;
+import org.apache.commons.lang3.tuple.Pair;
 import tk.plogitech.darksky.api.jackson.DarkSkyJacksonClient;
 import tk.plogitech.darksky.forecast.*;
 import tk.plogitech.darksky.forecast.model.Forecast;
@@ -15,8 +17,13 @@ import javax.validation.constraints.NotNull;
 import javax.ws.rs.*;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
-import java.util.Date;
+import java.time.DayOfWeek;
+import java.time.LocalDate;
+import java.time.ZoneOffset;
+import java.util.Comparator;
 import java.util.List;
+import java.util.Map;
+import java.util.stream.Collectors;
 
 /**
  * REST API for runs control
@@ -24,7 +31,7 @@ import java.util.List;
  * Created by Artem on 26.06.2017.
  */
 @Path("/runs")
-@RolesAllowed({"USER", "MANAGER"})
+@RolesAllowed({"USER", "ADMIN"})
 @Produces(MediaType.APPLICATION_JSON)
 @Consumes(MediaType.APPLICATION_JSON)
 public class RunsResource {
@@ -76,6 +83,38 @@ public class RunsResource {
             return new Representation<>(Response.Status.METHOD_NOT_ALLOWED, null);
         }
     }
+
+    /**
+     * <i>GET /runs/weekly</i>
+     * <br>
+     *
+     * @return List of weely data including total distance and average speed, sorted by date
+     */
+    @GET
+    @Path("weekly")
+    public Representation<List<WeeklyRuns>> listWeekly(@Auth User user, @QueryParam("page") Integer page, @QueryParam("per_page") Integer perPage) {
+        List<Run> allRuns = runsService.getRuns(user.getId(), null, null);
+        Map<Pair<LocalDate, LocalDate>, List<Run>> grouppedRuns = allRuns.stream().collect(Collectors.groupingBy(run -> dateToWeek(run.getDate())));
+
+        List<WeeklyRuns> weeklyAverages = grouppedRuns.entrySet().stream().map(entry -> {
+            float dist = 0;
+            long duration = 0;
+            for (Run run : entry.getValue()) {
+                dist += run.getDistance();
+                duration += run.getDuration();
+            }
+            return new WeeklyRuns(user.getId(), entry.getKey().getLeft(), entry.getKey().getRight(), entry.getValue().size(), duration, dist);
+        })
+                .sorted(Comparator.comparing(wa -> wa.getWeekStart()))
+                .collect(Collectors.toList());
+
+        return new Representation<>(Response.Status.OK, weeklyAverages);
+    }
+
+    private static Pair<LocalDate, LocalDate> dateToWeek(LocalDate date) {
+        return Pair.of(date.with(DayOfWeek.MONDAY), date.with(DayOfWeek.SUNDAY));
+    }
+
 
     /**
      * <i>GET /runs/userId</i>
@@ -139,12 +178,12 @@ public class RunsResource {
         return new Representation<>(Response.Status.OK, runsService.deleteRun(user, id));
     }
 
-    private String getWeather(Location location, Date date) {
+    private String getWeather(Location location, LocalDate date) {
         try {
             ForecastRequest request = new ForecastRequestBuilder()
                     .key(new APIKey(forecastKey))
                     .location(new GeoCoordinates(new Longitude(location.getLongitude()), new Latitude(location.getLatitude())))
-                    .time(date.toInstant())
+                    .time(date.atStartOfDay().toInstant(ZoneOffset.UTC))
                     .language(ForecastRequestBuilder.Language.en)
                     .units(ForecastRequestBuilder.Units.si)
                     .build();
