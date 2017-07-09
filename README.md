@@ -27,3 +27,12 @@ Example -> (date eq '2016-05-01') AND ((distance gt 20) OR (distance lt 10)).
 * GET /users/me - get info about current user
 * PUT /users - consumes JSON, update info of user, accessed by admin or manager
 * DELETE /users/{id} - delete user with id, accessed by admin or manager
+
+#### /runs
+* POST /runs/new - consumes JSON, create new run
+* GET /runs?page=X&per_page=Y - list existing runs, accessed by admin (see runs for all users) or user
+* GET /runs/{id} - get info about run with id, accessed by admin or user
+* GET /runs/{userId} - get info about runs for user with id, accessed by admin
+* GET /runs/weekly?page=X&per_page=Y - get weekly report for current user
+* PUT /runs - consumes JSON, update info of the run owned by current user
+* DELETE /runs/{id} - delete run with id
