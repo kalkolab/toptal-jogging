@@ -22,7 +22,7 @@ Example -> (date eq '2016-05-01') AND ((distance gt 20) OR (distance lt 10)).
 #### /users
 * POST /users/new - consumes JSON, create new user
 * POST /users/new/admin or /users/new/manager - create new manager or admin user, can be accessed by admin only
-* GET /users?page=X&per_page=Y - list existing users, accessed by admin or manager
+* GET /users?page=X&per_page=Y&filter=<QUERY> - list existing users, accessed by admin or manager
 * GET /users/{id} - get info about user with id, accessed by admin or manager
 * GET /users/me - get info about current user
 * PUT /users - consumes JSON, update info of user, accessed by admin or manager
@@ -33,6 +33,8 @@ Example -> (date eq '2016-05-01') AND ((distance gt 20) OR (distance lt 10)).
 * GET /runs?page=X&per_page=Y - list existing runs, accessed by admin (see runs for all users) or user
 * GET /runs/{id} - get info about run with id, accessed by admin or user
 * GET /runs/{userId} - get info about runs for user with id, accessed by admin
-* GET /runs/weekly?page=X&per_page=Y - get weekly report for current user
+* GET /runs/weekly?page=X&per_page=Y&filter=<QUERY> - get weekly report for current user
 * PUT /runs - consumes JSON, update info of the run owned by current user
 * DELETE /runs/{id} - delete run with id
+
+<QUERY> implements usual SQL syntax with OR, AND, >, <, =, <>

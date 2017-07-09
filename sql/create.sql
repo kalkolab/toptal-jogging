@@ -11,11 +11,11 @@ create table users (
 create table runs (
  id int not null AUTO_INCREMENT,
  userid int not null,
- runtime long not null,
+ duration long not null,
  distance float not null,
- rundate DATE not null,
- lat float,
- lon float,
+ 'date' DATE not null,
+ latitude float,
+ longitude float,
  weather VARCHAR(1024),
  PRIMARY KEY (ID),
   FOREIGN KEY (userid) REFERENCES users(id)

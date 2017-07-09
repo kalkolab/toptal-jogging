@@ -75,9 +75,10 @@ public class RunsResource {
      * @return List of all runs for user
      */
     @GET
-    public Representation<List<Run>> list(@Auth User user, @QueryParam("page") Integer page, @QueryParam("per_page") Integer perPage) {
+    public Representation<List<Run>> list(@Auth User user, @QueryParam("page") Integer page, @QueryParam("per_page") Integer perPage, @QueryParam("filter") String filter) {
         if (user.getRole() == User.Role.USER) {
-            return new Representation<>(Response.Status.OK, runsService.getRuns(user.getId(), page, perPage));
+            List<Run> runs = runsService.getRuns(user.getId(), page, perPage, filter);
+            return new Representation<>(Response.Status.OK, runs);
         } else if (user.getRole() == User.Role.ADMIN) {
             return new Representation<>(Response.Status.OK, runsService.getRuns(page, perPage));
         } else {
@@ -93,8 +94,8 @@ public class RunsResource {
      */
     @GET
     @Path("weekly")
-    public Representation<List<WeeklyRuns>> listWeekly(@Auth User user, @QueryParam("page") Integer page, @QueryParam("per_page") Integer perPage) {
-        List<Run> allRuns = runsService.getRuns(user.getId(), null, null);
+    public Representation<List<WeeklyRuns>> listWeekly(@Auth User user, @QueryParam("page") Integer page, @QueryParam("per_page") Integer perPage, @QueryParam("filter") String filter) {
+        List<Run> allRuns = runsService.getRuns(user.getId(), null, null, filter);
         Map<Pair<LocalDate, LocalDate>, List<Run>> grouppedRuns = allRuns.stream().collect(Collectors.groupingBy(run -> dateToWeek(run.getDate())));
 
         Stream<WeeklyRuns> weeklyAverages = grouppedRuns.entrySet().stream().map(entry -> {
@@ -130,8 +131,8 @@ public class RunsResource {
     @GET
     @RolesAllowed({"ADMIN"})
     @Path("/user/{userId}")
-    public Representation<List<Run>> list(@PathParam("userId") int userId, @QueryParam("page") Integer page, @QueryParam("per_page") Integer perPage) {
-        return new Representation<>(Response.Status.OK, runsService.getRuns(userId, page, perPage));
+    public Representation<List<Run>> list(@PathParam("userId") int userId, @QueryParam("page") Integer page, @QueryParam("per_page") Integer perPage, @QueryParam("filter") String filter) {
+        return new Representation<>(Response.Status.OK, runsService.getRuns(userId, page, perPage, filter));
     }
 
 

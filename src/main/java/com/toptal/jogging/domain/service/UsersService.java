@@ -2,6 +2,7 @@ package com.toptal.jogging.domain.service;
 
 import com.toptal.jogging.domain.User;
 import com.toptal.jogging.domain.dao.UsersDao;
+import org.apache.commons.lang3.StringUtils;
 import org.skife.jdbi.v2.sqlobject.CreateSqlObject;
 
 import javax.ws.rs.WebApplicationException;
@@ -24,11 +25,13 @@ public abstract class UsersService {
   @CreateSqlObject
   abstract UsersDao usersDao();
 
-  public List<User> getUsers(Integer page, Integer perPage) {
+  public List<User> getUsers(Integer page, Integer perPage, String filter) {
     if (page == null) page = 1;
+
+    String clause = StringUtils.defaultIfEmpty(filter, "true");
     return perPage != null
-            ? usersDao().getUsers((page-1)*perPage, perPage)
-            : usersDao().getUsers();
+            ? usersDao().getUsers((page-1)*perPage, perPage, clause)
+            : usersDao().getUsers(clause);
   }
 
   public User getUser(int id) {

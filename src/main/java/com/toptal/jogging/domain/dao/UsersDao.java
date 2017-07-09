@@ -5,17 +5,20 @@ import org.skife.jdbi.v2.sqlobject.Bind;
 import org.skife.jdbi.v2.sqlobject.BindBean;
 import org.skife.jdbi.v2.sqlobject.SqlQuery;
 import org.skife.jdbi.v2.sqlobject.SqlUpdate;
+import org.skife.jdbi.v2.sqlobject.customizers.Define;
 import org.skife.jdbi.v2.sqlobject.customizers.RegisterMapper;
+import org.skife.jdbi.v2.sqlobject.stringtemplate.UseStringTemplate3StatementLocator;
 
 import java.util.List;
 
 @RegisterMapper(UsersMapper.class)
+@UseStringTemplate3StatementLocator
 public interface UsersDao {
-    @SqlQuery("select * from users order by id;")
-    List<User> getUsers();
+    @SqlQuery("select * from users where <clause> order by id;")
+    List<User> getUsers(@Define("clause") String clause);
 
-    @SqlQuery("select * from users order by id limit :skip, :perPage;")
-    List<User> getUsers(@Bind("skip") final int skip, @Bind("perPage") final int perPage);
+    @SqlQuery("select * from users where <clause> order by id limit :skip, :perPage;")
+    List<User> getUsers(@Bind("skip") final int skip, @Bind("perPage") final int perPage, @Define("clause") String clause);
 
     @SqlQuery("select * from users where id = :id")
     User getUser(@Bind("id") final long id);

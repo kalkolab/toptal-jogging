@@ -3,6 +3,7 @@ package com.toptal.jogging.domain.service;
 import com.toptal.jogging.domain.Run;
 import com.toptal.jogging.domain.User;
 import com.toptal.jogging.domain.dao.RunsDao;
+import org.apache.commons.lang3.StringUtils;
 import org.skife.jdbi.v2.sqlobject.CreateSqlObject;
 
 import javax.ws.rs.WebApplicationException;
@@ -41,12 +42,13 @@ public abstract class RunsService {
     return run;
   }
 
-  public List<Run> getRuns(int userId, Integer page, Integer perPage) {
+  public List<Run> getRuns(int userId, Integer page, Integer perPage, String filter) {
     if (page == null) page = 1;
 
+    String clause = StringUtils.defaultIfEmpty(filter, "true");
     return perPage != null
-            ? runsDao().getRuns(userId, perPage*(page-1), perPage)
-            : runsDao().getRuns(userId);
+            ? runsDao().getRuns(userId, perPage*(page-1), perPage, clause)
+            : runsDao().getRuns(userId, clause);
   }
 
   public Run createRun(User user, Run run) {
