@@ -101,11 +101,9 @@ public class UsersResource {
     }
 
     /**
-     * <i>GET /users/id</i>
+     * <i>GET /users/me</i>
      * <br>
      * You must have Manager role to call this method
-     *
-     * @param user User object as JSON
      *
      * @return Get user info as JSON
      */
@@ -118,7 +116,7 @@ public class UsersResource {
     }
 
     /**
-     * <i>GET /users/id</i>
+     * <i>PUT /users</i>
      * <br>
      * You must have Manager role to call this method
      *
