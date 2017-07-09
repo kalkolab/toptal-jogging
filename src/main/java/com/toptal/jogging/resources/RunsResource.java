@@ -105,7 +105,7 @@ public class RunsResource {
                 duration += run.getDuration();
             }
             return new WeeklyRuns(user.getId(), entry.getKey().getLeft(), entry.getKey().getRight(), entry.getValue().size(), duration, dist);
-        }).sorted(Comparator.comparing(wa -> wa.getWeekStart()));
+        }).sorted(Comparator.comparing(WeeklyRuns::getWeekStart));
 
         if (perPage != null) {
             if (page != null) {
